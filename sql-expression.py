@@ -17,14 +17,30 @@ artist_table = Table(
 album_table = Table(
     "Album", meta,
     Column("AlbumId", Integer, primary_key=True),
-    Column("Title",String),
+    Column("Title", String),
     Column("ArtistId", Integer, ForeignKey("artist_table.ArtistId"))
 )
 
 # Create variable for "Track" table
 track_table = Table(
-    "Track", meta
+    "Track", meta,
+    Column("TrackId", Integer, primary_key=True),
+    Column("Name", String),
+    Column("AlbumId", Integer, ForeignKey("album_table.AlbumId")),
+    Column("MediaTypeId", Integer, primary_key=False),
+    Column("GenreId", Integer, primary_key=False),
+    Column("Composer", String),
+    Column("Milliseconds", Integer),
+    Column("Bytes", Integer),
+    Column("UnitPrice", Float)
 )
 
 # making the connection
 with db.connect() as connection:
+    # select_query = artist_table.select()
+    # select_query = artist_table.select().with_only_columns([artist_table.c.Name])
+    select_query = artist_table.select().where(artist_table.c.Name == "Queen")
+
+    results = connection.execute(select_query)
+    for result in results:
+        print(result)
